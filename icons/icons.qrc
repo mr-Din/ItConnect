@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>test.png</file>
+        <file>redo.svg</file>
+        <file>user-outline-on.svg</file>
+        <file>noimage.svg</file>
+        <file>trash-can-gray.svg</file>
+        <file>gray-icon.svg</file>
+        <file>menu-checked.svg</file>
+    </qresource>
+</RCC>

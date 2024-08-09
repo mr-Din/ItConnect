@@ -1,0 +1,229 @@
+/* style.qss */
+
+/* QGridLayout */
+QGridLayout {
+    background-color: #eaffea; /* зелёный фон */
+    padding: 10px;
+    margin: 10px;
+}
+
+/* QStackedWidget */
+QStackedWidget {
+    background-color: #ccffcc; /* зелёный фон */
+    border: 2px solid #006400; /* тёмно-зелёная граница */
+    border-radius: 5px;
+}
+
+/* QLabel */
+QLabel {
+    color: #006400; /* тёмно-зелёный цвет текста */
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px;
+}
+
+/* QPushButton */
+QPushButton {
+    background-color: #7fff7f; /* светло-зелёный фон */
+    color: #006400; /* тёмно-зелёный цвет текста */
+    border: 2px solid #006400; /* тёмно-зелёная граница */
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+QPushButton:hover {
+    background-color: #66ff66; /* более светлый зелёный при наведении */
+}
+
+QPushButton:pressed {
+    background-color: #4cff4c; /* ещё более светлый зелёный при нажатии */
+}
+
+/* QPlainTextEdit */
+QPlainTextEdit {
+    background-color: #e0ffe0; /* светло-зелёный фон */
+    color: #006400; /* тёмно-зелёный цвет текста */
+    border: 1px solid #006400; /* тёмно-зелёная граница */
+    border-radius: 5px;
+    padding: 5px;
+    font-family: Consolas, "Courier New", monospace;
+}
+
+/* QLineEdit */
+QLineEdit {
+    background-color: #e0ffe0; /* светло-зелёный фон */
+    color: #006400; /* тёмно-зелёный цвет текста */
+    border: 1px solid #006400; /* тёмно-зелёная граница */
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* QTabWidget */
+QTabWidget::pane {
+    border: 1px solid #006400; /* тёмно-зелёная граница */
+    background: #ccffcc; /* зелёный фон */
+    border-radius: 5px;
+}
+
+QTabWidget::tab-bar {
+    alignment: center;
+}
+
+QTabBar::tab {
+    background: #7fff7f; /* светло-зелёный фон */
+    border: 1px solid #006400; /* тёмно-зелёная граница */
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 2px;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: #66ff66; /* более светлый зелёный при выборе или наведении */
+}
+
+/* QComboBox */
+QComboBox {
+    background-color: #e0ffe0; /* светло-зелёный фон */
+    color: #006400; /* тёмно-зелёный цвет текста */
+    border: 1px solid #006400; /* тёмно-зелёная граница */
+    border-radius: 5px;
+    padding: 5px;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+    border-left-width: 1px;
+    border-left-color: #006400; /* тёмно-зелёная граница */
+    border-left-style: solid;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+QComboBox::down-arrow {
+    image: url(down_arrow.png); /* Укажите путь к изображению стрелки вниз */
+    width: 10px;
+    height: 10px;
+}
+
+/* QScrollArea */
+QScrollArea {
+    background-color: #ccffcc; /* зелёный фон */
+    border: 1px solid #006400; /* тёмно-зелёная граница */
+    border-radius: 5px;
+}
+
+QScrollBar:vertical {
+    background: #e0ffe0; /* светло-зелёный фон */
+    width: 15px;
+    margin: 15px 3px 15px 3px;
+    border: 1px solid #006400; /* тёмно-зелёная граница */
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical {
+    background: #7fff7f; /* светло-зелёный фон */
+    min-height: 20px;
+    border-radius: 5px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    background: #66ff66; /* более светлый зелёный */
+    height: 15px;
+    subcontrol-origin: margin;
+    subcontrol-position: bottom;
+    border-radius: 5px;
+}
+
+/* QStatusBar */
+QStatusBar {
+    background-color: #eaffea; /* зелёный фон */
+    color: #006400; /* тёмно-зелёный цвет текста */
+    border-top: 1px solid #006400; /* тёмно-зелёная граница сверху */
+}
+
+/* QWidget */
+QWidget {
+    background-color: #ccffcc; /* зелёный фон */
+    color: #006400; /* тёмно-зелёный цвет текста */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+
+
+
+
+
+
+/*QWidget
+{
+    background: #234035;
+}
+
+QTabBar::tab
+{
+    background: #234035;
+    color: white;
+    padding: 10px;
+}
+
+QTabBar::tab:selected
+{
+    background: #192e26;
+}
+
+QTabWidget::pane
+{
+    background: #192e26;
+}
+
+QLabel
+{
+    color: lightgray;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-size: 14px;
+
+    min-height: 48px;
+}*/
+
+
+
+
+/*MainWindows #tabWidget::pane
+{
+    border: 0;
+    background-image: url(:/icons/redo.svg);
+}
+
+MainWindows QTabBar#tab_main
+{
+    background-image: url(:/icons/redo.svg);
+}*/
+
+ItConnect #pushButton
+{
+    background: transparent;
+    image: url(:/icons/redo.svg);
+}
+
+ItemSkill[is_selected="false"]
+{
+    /*image: url(:/icons/gray-icon.svg);*/
+    text-align:left;
+    qproperty-icon: url(:/icons/gray-icon.svg);
+    qproperty-iconSize: 24px;
+}
+
+ItemSkill[is_selected="true"]
+{
+    /*image: url(:/icons/menu-checked.svg);*/
+    text-align:left;
+    qproperty-icon: url(:/icons/menu-checked.svg);
+    qproperty-iconSize: 24px;
+}
