@@ -2,9 +2,12 @@
 #include "./ui_MainWindow.h"
 #include "InitDataBase.h"
 #include "WgtWorker.h"
+#include "DlgSelProject.h"
 
 
 #include <QMessageBox>
+#include <QScroller>
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -13,13 +16,36 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     setupSigSlot();
+    ui->combo_type->addItems({"Разработчик", "Проект менеджер"});
     fillUi();
     prepareApp();
     setStyle();
+
+    for (auto sa : {ui->sa_account, ui->sa_projects, ui->sa_workers, ui->scrollArea}) {
+        QScroller::grabGesture(sa, QScroller::TouchGesture);
+//        connect(sa->verticalScrollBar(), &QScrollBar::valueChanged, [sa]() {
+//            sa->update();
+//            qDebug()<<"FUCK";
+//        });
+    }
+
+    demoEnter();
 }
 
 MainWindow::~MainWindow()
 {
+}
+
+//bool MainWindow::event(QEvent *event)
+//{
+//    qDebug()<<"event"<<event->type();
+//    return QMainWindow::event(event);
+//}
+
+void MainWindow::paintEvent(QPaintEvent *event)
+{
+    QMainWindow::paintEvent(event);  // Вызов базового класса
+    update();  // Принудительная перерисовка
 }
 
 void MainWindow::setupSigSlot()
@@ -32,7 +58,6 @@ void MainWindow::setupSigSlot()
 
 void MainWindow::fillUi()
 {
-    ui->combo_type->addItems({"Разработчик", "Проект менеджер"});
     if (m_type_user.isEmpty())
     {
         ui->tabWidget->setCurrentIndex(MAIN);
@@ -60,6 +85,7 @@ void MainWindow::fillUi()
 
 void MainWindow::setStyle()
 {
+    qDebug() << "Set stylesheet";
     QFile styleFile(":/files/ItConnect.qss");
     styleFile.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(styleFile.readAll());
@@ -79,6 +105,8 @@ void MainWindow::prepareApp()
 
 void MainWindow::fillUsers()
 {
+    m_workers.clear();
+    m_managers.clear();
     QSqlQuery users_query;
     users_query.prepare("SELECT * FROM users");
     if (!users_query.exec())
@@ -155,7 +183,10 @@ void MainWindow::fillWgtUsers()
     QVBoxLayout* lt = new QVBoxLayout();
     for (const auto& user : m_workers)
     {
-        lt->addWidget(new WgtWorker(user));
+        auto wgt = new WgtWorker(user, m_projects);
+        connect(wgt, &WgtWorker::sigSelectProject, this, &MainWindow::onDlgSelProject);
+        connect(wgt, &WgtWorker::sigShowProject, this, &MainWindow::onShowProject);
+        lt->addWidget(wgt);
     }
     lt->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
 //    lt->setSpacing(0);
@@ -169,7 +200,9 @@ void MainWindow::fillWgtProjects()
     QVBoxLayout* lt = new QVBoxLayout();
     for (const auto& proj : m_projects)
     {
-        lt->addWidget(new WgtProject(proj, m_all_skills));
+        auto wgt = new WgtProject(proj, m_all_skills);
+        lt->addWidget(wgt);
+        connect(this, &MainWindow::sigShowProject, wgt, &WgtProject::onShowProject);
     }
     lt->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
     //    lt->setSpacing(0);
@@ -181,7 +214,9 @@ void MainWindow::fillAccountPage()
     clearLayout(ui->sa_account_content);
     QVBoxLayout* lt = new QVBoxLayout();
 
-    lt->addWidget(new WgtWorker(m_cur_user, true));
+    auto wgt = new WgtWorker(m_cur_user, m_projects, true);
+    lt->addWidget(wgt);
+    connect(wgt, &WgtWorker::sigShowProject, this, &MainWindow::onShowProject);
 
     lt->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
     ui->sa_account_content->setLayout(lt);
@@ -199,7 +234,21 @@ void MainWindow::fillManagerPage()
         if (m_cur_user->getId() == proj->getManagerId())
         {
             auto wgt = new WgtProject(proj, m_all_skills, true, ui->sa_account);
-            connect(wgt, &WgtProject::sigDelProject, this, [this](){ fillProjects(); fillWgtProjects(); fillManagerPage(); }, Qt::QueuedConnection);
+            connect(wgt, &WgtProject::sigDelProject, this, [this](int id_proj)
+                {
+                    fillProjects();
+                    fillWgtProjects();
+                    fillManagerPage();
+                    clearProjectFromUsers(id_proj);
+                }, Qt::QueuedConnection);
+
+            connect(wgt, &WgtProject::sigUpdateAll, this, [this]
+                {
+                    fillProjects();
+                    fillWgtProjects();
+                    fillWgtUsers();
+                }, Qt::QueuedConnection);
+
             lt->addWidget(wgt);
         }
     }
@@ -257,6 +306,24 @@ void MainWindow::clearLE()
         le->setText("");
 }
 
+void MainWindow::clearProjectFromUsers(int id_proj)
+{
+    for (auto& user : m_workers)
+    {
+        if (user->getProjectId() == id_proj)
+        {
+            onAddUserToProject(0, user->getId());
+        }
+    }
+}
+
+void MainWindow::demoEnter()
+{
+    ui->le_email->setText("manager1@mail.ru");
+    ui->le_password->setText("123");
+    authentication();
+}
+
 void MainWindow::authentication()
 {
     QString email = ui->le_email->text();
@@ -304,7 +371,7 @@ void MainWindow::authentication()
         return;
     }
 
-    QMessageBox::information(nullptr, "Регистрация", "Добро пожаловать!", QMessageBox::Ok);
+    QMessageBox::information(nullptr, "Авторизация", "Добро пожаловать!", QMessageBox::Ok);
 
 //    m_cur_user = m_workers.back();
     fillWgtUsers();
@@ -410,7 +477,58 @@ void MainWindow::addNewProject()
     {
         addProject(q, QLatin1String("proj1"), QLatin1String("Proj1 - is cool"), m_cur_user->getId());
         fillProjects();
+        fillWgtProjects();
         fillManagerPage();
     }
 }
 
+void MainWindow::onDlgSelProject(int id_user)
+{
+    DlgSelProject dlg(m_projects, m_cur_user, this);
+    connect(&dlg, &DlgSelProject::sigSelProject, this, [=](int id){ onAddUserToProject(id, id_user); });
+    //    connect(&dlg, &DlgSelProject::accepted, this, &WgtWorker::onAddNewSkills);
+    //    connect(&dlg, &DlgSelProject::rejected, this, &WgtWorker::onClearAddedSkills);
+    if (dlg.exec())
+        return;
+}
+
+void MainWindow::onAddUserToProject(int id_proj, int id_user)
+{
+
+    // Вносим изменения в базу данных!
+    QSqlQuery q;
+    if (!q.prepare(UPDATE_USER_PROJ_SQL))
+        q.lastError();
+
+    updateUserProject(q, id_user, id_proj);
+
+    // Обновить страницу workers
+    fillUsers();
+    fillWgtUsers();
+}
+
+void MainWindow::onShowProject(int id)
+{
+    qDebug() << "show project";
+    ui->tabWidget->setCurrentIndex(PROJECTS);
+    ui->sa_projects_content->setDisabled(false);
+
+
+    QList<WgtProject*> widgetList;
+    QWidget *container = ui->sa_projects->widget();
+    if (container)
+    {
+        widgetList = container->findChildren<WgtProject*>();
+    }
+    for (auto wgt : widgetList){
+        if (wgt->getProject()->getId() == id)
+        {
+            // Определяем позицию виджета относительно контейнера
+            QPoint widgetPos = wgt->mapTo(ui->sa_projects->widget(), QPoint(0, 0));
+            // Обновляем позицию вертикального скролла
+            ui->sa_projects->verticalScrollBar()->setValue(widgetPos.y());
+        }
+    }
+
+    emit sigShowProject(id);
+}

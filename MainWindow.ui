@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>471</height>
+    <width>437</width>
+    <height>475</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,10 +15,22 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>2</number>
+    </property>
+    <property name="topMargin">
+     <number>2</number>
+    </property>
+    <property name="rightMargin">
+     <number>2</number>
+    </property>
+    <property name="bottomMargin">
+     <number>2</number>
+    </property>
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tap_account">
        <attribute name="title">
@@ -214,7 +226,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>80</width>
+                 <width>66</width>
                  <height>16</height>
                 </rect>
                </property>
@@ -277,8 +289,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>378</height>
+             <width>298</width>
+             <height>392</height>
             </rect>
            </property>
           </widget>
@@ -316,8 +328,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>776</width>
-             <height>378</height>
+             <width>298</width>
+             <height>392</height>
             </rect>
            </property>
           </widget>
@@ -330,6 +342,18 @@
         <string>Главная</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_3">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item row="0" column="0">
          <widget class="QScrollArea" name="scrollArea">
           <property name="widgetResizable">
@@ -340,11 +364,23 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>758</width>
-             <height>360</height>
+             <width>284</width>
+             <height>676</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
+             <number>2</number>
+            </property>
             <item row="0" column="0">
              <widget class="QLabel" name="lbl_description">
               <property name="sizePolicy">
@@ -388,7 +424,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>437</width>
      <height>21</height>
     </rect>
    </property>

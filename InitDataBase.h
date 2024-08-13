@@ -46,6 +46,13 @@ inline void updateUser(QSqlQuery &q, const QString &login, const QString &descri
     q.exec();
 }
 
+inline void updateUserProject(QSqlQuery &q, const QVariant &id, const QVariant &project_id)
+{
+    q.bindValue(":id", id);
+    q.bindValue(":project_id", project_id);
+    q.exec();
+}
+
 inline void updateProject(QSqlQuery &q, const QString &title, /*const QString &email,*/ const QString &description, const QVariant &id)
 {
     q.bindValue(":title", title);
@@ -102,6 +109,10 @@ const auto UPDATE_USER_SQL = QLatin1String(R"(
     UPDATE users SET login = :login, description = :description WHERE id = :id
     )");
 
+const auto UPDATE_USER_PROJ_SQL = QLatin1String(R"(
+    UPDATE users SET project_id = :project_id WHERE id = :id
+    )");
+
 const auto UPDATE_PROJECT_SQL = QLatin1String(R"(
     UPDATE projects SET title = :title, description = :description WHERE id = :id
     )");
@@ -112,11 +123,14 @@ const auto DELETE_PROJECT_SQL = QLatin1String(R"(
 
 inline QSqlError initDb()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-//    QString tmp = QCoreApplication::applicationDirPath();
-//    QString path = "D:\\diploma\\IT_Connect\\database\\database.db";
+#ifdef Q_OS_ANDROID
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/database.db";
+#else
     QString path = QCoreApplication::applicationDirPath() + "/database.db";
+#endif
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName(path);
+
 
     if (!db.open())
         return db.lastError();

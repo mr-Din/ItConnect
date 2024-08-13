@@ -15,15 +15,32 @@ WgtProject::WgtProject(std::shared_ptr<Project> proj, shrd_map_skills skills, bo
     , m_all_skills(skills)
     , m_is_account(is_account)
     , m_sa(qobject_cast<QScrollArea*>(parent))
+    , m_counter(0)
+    , m_timer(new QTimer(this))
 {
     ui->setupUi(this);
     fillSkills();
     fillUi();
     setupSigSlot();
+
+    connect(m_timer, &QTimer::timeout, this, &WgtProject::animate);
 }
 
 WgtProject::~WgtProject()
 {}
+
+std::shared_ptr<Project> WgtProject::getProject() const
+{
+    return m_project;
+}
+
+void WgtProject::onShowProject(int id)
+{
+    if (id == m_project->getId())
+    {
+        m_timer->start(400);
+    }
+}
 
 void WgtProject::fillUi()
 {
@@ -106,6 +123,8 @@ void WgtProject::setupSigSlot()
     connect(ui->btn_change_photo, &QPushButton::clicked, this, &WgtProject::onChangePhoto);
 
     connect(ui->btn_add_skill, &QPushButton::clicked, this, &WgtProject::onOpenDlgSelSkills);
+
+    connect(ui->btn_add_worker, &QPushButton::clicked, this, &WgtProject::sigSelProject);
 }
 
 void WgtProject::setPhoto(const QString &path_to_photo)
@@ -188,7 +207,7 @@ void WgtProject::onDelProject()
     }
 
     // Удаление виджета
-    emit sigDelProject();
+    emit sigDelProject(m_project->getId());
 
     onDelProjectConfirm(0);
 }
@@ -198,12 +217,16 @@ void WgtProject::onEdit()
     ui->le_title->setText(ui->lbl_title_2->text());
     ui->te_info->setPlainText(ui->lbl_info_2->text());
     onFillSkillsOnEdit();
+    auto scrollPos = m_sa->verticalScrollBar()->value();
     ui->stackedWidget->setCurrentIndex(1);
+    m_sa->verticalScrollBar()->setValue(scrollPos);
 }
 
 void WgtProject::onReject()
 {
+    auto scrollPos = m_sa->verticalScrollBar()->value();
     ui->stackedWidget->setCurrentIndex(0);
+    m_sa->verticalScrollBar()->setValue(scrollPos);
     m_del_buff_skills.clear();
     m_added_skills.clear();
     fillSkills();
@@ -245,7 +268,10 @@ void WgtProject::onDone()
     onAddNewSkillsToBD();
     fillSkills();
 
+    auto scrollPos = m_sa->verticalScrollBar()->value();
     ui->stackedWidget->setCurrentIndex(0);
+    m_sa->verticalScrollBar()->setValue(scrollPos);
+    emit sigUpdateAll();
 }
 
 void WgtProject::onChangePhoto()
@@ -330,4 +356,22 @@ void WgtProject::onAddNewSkillsToBD()
 void WgtProject::onClearAddedSkills()
 {
     m_added_skills.clear();
+}
+
+void WgtProject::animate()
+{
+    if (m_counter % 2 == 0) {
+        setStyleSheet("background-color: #9adafc;");
+    } else {
+        setStyleSheet(m_style);
+    }
+
+    ++m_counter;
+
+    if (m_counter >= 4)
+    {
+        m_timer->stop();  // Останавливаем таймер
+        setStyleSheet(m_style);  // Восстанавливаем исходный стиль
+        m_counter = 0;
+    }
 }

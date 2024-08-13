@@ -1,15 +1,17 @@
 #include "WgtWorker.h"
 #include "InitDataBase.h"
 #include "ui_WgtWorker.h"
+#include "Project.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QScreen>
 
-WgtWorker::WgtWorker(std::shared_ptr<User> user, bool is_editable, QWidget *parent)
+WgtWorker::WgtWorker(std::shared_ptr<User> user, std::vector<std::shared_ptr<Project>>& projects, bool is_editable, QWidget *parent)
     : QWidget(parent)
     , ui(std::make_unique<Ui_WgtWorker>())
     , m_user(user)
     , m_is_editable(is_editable)
+    , m_all_projects(projects)
 {
     ui->setupUi(this);
     fillUi();
@@ -32,8 +34,13 @@ void WgtWorker::fillUi()
     ui->lbl_login_2->setText(m_user->getLogin());
     ui->lbl_email_2->setText(m_user->getEmail());
     ui->lbl_info_2->setText(m_user->getDescription());
-    ui->lbl_status_2->setText(m_user->getProjectId() == 0 ? "Свободен" : "Занят");
     ui->btn_edit->setVisible(m_is_editable);
+    ui->lbl_status_2->setText(m_user->getProjectId() == 0 ? "Свободен" : "Занят");
+    ui->btn_add_to_project->setEnabled(m_user->getProjectId() == 0);
+    ui->btn_project->setVisible(m_user->getProjectId() != 0);
+
+    ui->btn_project->setText(getProjectName());
+
     /// TODO брать изображение из базы данных (либо адрес картинки из бд)
     QString path_to_photo = ":/icons/user-outline-on.svg";
     setPhoto(path_to_photo);
@@ -45,6 +52,9 @@ void WgtWorker::setupSigSlot()
     connect(ui->btn_ok, &QPushButton::clicked, this, &WgtWorker::onDone);
     connect(ui->btn_exit, &QPushButton::clicked, this, [&](){ui->stackedWidget->setCurrentIndex(0);} );
     connect(ui->btn_change_photo, &QPushButton::clicked, this, &WgtWorker::onChangePhoto);
+    connect(ui->btn_add_to_project, &QPushButton::clicked, this, &WgtWorker::onSelectProject);
+    connect(ui->btn_project, &QPushButton::clicked, this, [=]{ emit sigShowProject(m_user->getProjectId()); });
+
 }
 
 void WgtWorker::setPhoto(const QString &path_to_photo)
@@ -54,6 +64,14 @@ void WgtWorker::setPhoto(const QString &path_to_photo)
         photo.load(":/icons/user-outline-on.svg");
     QPixmap scaled_photo = photo.scaledToWidth(PHOTO_WIDTH, Qt::SmoothTransformation);
     ui->lbl_photo->setPixmap(scaled_photo);
+}
+
+QString WgtWorker::getProjectName() const
+{
+    auto it = std::find_if(m_all_projects.begin(), m_all_projects.end(), [=](std::shared_ptr<Project> proj){
+        return (proj->getId() == m_user->getProjectId());
+    });
+    return (it != m_all_projects.end() ? it->get()->getTitle() : "");
 }
 
 void WgtWorker::onEdit()
@@ -92,4 +110,9 @@ void WgtWorker::onChangePhoto()
     QString path_to_photo = QFileDialog::getOpenFileName(this, "Выберите изображение", "", "Изображения (*.png *.jpg *.jpeg *.bmp *.gif)");
 
     setPhoto(path_to_photo);
+}
+
+void WgtWorker::onSelectProject()
+{
+    emit sigSelectProject(m_user->getId());
 }

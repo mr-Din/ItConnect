@@ -14,8 +14,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     enum {
         ACCOUNT,
-        WORKERS,
         PROJECTS,
+        WORKERS,
         MAIN
     };
 
@@ -25,6 +25,8 @@ public:
     ~MainWindow();
 
 private:
+//    bool event(QEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
     void setupSigSlot();
     void fillUi();
     void setStyle();
@@ -39,12 +41,22 @@ private:
     std::shared_ptr<User> getUser(const QString &email);
     void clearLayout(QWidget *wgt);
     void clearLE();
+    void clearProjectFromUsers(int id_proj);
+
+    void demoEnter();
 
 private slots:
     void authentication();
     void registration();
     void logout();
     void addNewProject();
+
+    void onDlgSelProject(int id_user);
+    void onAddUserToProject(int id_proj, int id_user);
+    void onShowProject(int id);
+
+signals:
+    void sigShowProject(int id);
 
 
 private:

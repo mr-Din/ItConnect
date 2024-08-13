@@ -14,10 +14,16 @@ using shrd_map_skills = std::shared_ptr<std::map<int, QString>>;
 class WgtProject : public QWidget
 {
     Q_OBJECT
-    const static int PHOTO_WIDTH = 200;
+    const static int PHOTO_WIDTH = 80;
 public:
     explicit WgtProject(std::shared_ptr<Project> proj, shrd_map_skills skills, bool is_account = false, QWidget *parent = nullptr);
     ~WgtProject();
+
+public:
+    std::shared_ptr<Project> getProject() const;
+
+public slots:
+    void onShowProject(int id);
 
 private:
     void fillUi();
@@ -42,9 +48,12 @@ private slots:
     void onAddNewSkills();
     void onAddNewSkillsToBD();
     void onClearAddedSkills();
+    void animate();
 
 signals:
-    void sigDelProject();
+    void sigDelProject(int id_proj);
+    void sigSelProject();
+    void sigUpdateAll();
 
 private:
     std::unique_ptr<Ui_WgtProject> ui;
@@ -55,5 +64,8 @@ private:
     shrd_map_skills m_all_skills;               // все скиллы
     std::vector<QString> m_del_buff_skills;     // буфер удалённых скиллов
     std::vector<QString> m_added_skills;        // скиллы добавленные из диалога выбора скиллов
+    QTimer *m_timer;  // Таймер для анимации
+    int m_counter;  // Счетчик тиков таймера
+    QString m_style;
 };
 
