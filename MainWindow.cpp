@@ -86,7 +86,9 @@ void MainWindow::fillUi()
 void MainWindow::setStyle()
 {
     qDebug() << "Set stylesheet";
-    QFile styleFile(":/files/ItConnect.qss");
+//    QFile styleFile(":/files/ItConnect.qss");
+    // тёмная тема
+    QFile styleFile(":/files/ItConnect_dark.qss");
     styleFile.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(styleFile.readAll());
     setStyleSheet(styleSheet);
@@ -183,7 +185,7 @@ void MainWindow::fillWgtUsers()
     QVBoxLayout* lt = new QVBoxLayout();
     for (const auto& user : m_workers)
     {
-        auto wgt = new WgtWorker(user, m_projects);
+        auto wgt = new WgtWorker(user, m_projects, false, true);
         connect(wgt, &WgtWorker::sigSelectProject, this, &MainWindow::onDlgSelProject);
         connect(wgt, &WgtWorker::sigShowProject, this, &MainWindow::onShowProject);
         lt->addWidget(wgt);
@@ -200,9 +202,19 @@ void MainWindow::fillWgtProjects()
     QVBoxLayout* lt = new QVBoxLayout();
     for (const auto& proj : m_projects)
     {
-        auto wgt = new WgtProject(proj, m_all_skills);
+        auto wgt = new WgtProject(proj, m_all_skills, false, (m_type_user=="worker" && m_cur_user->getProjectId() == 0));
         lt->addWidget(wgt);
         connect(this, &MainWindow::sigShowProject, wgt, &WgtProject::onShowProject);
+        connect(wgt, &WgtProject::sigSelProject, this, [=](int id)
+            {
+                emit sigUpdCurrentAccount(id);
+//                onAddUserToProject(id, m_cur_user->getId());
+                QTimer::singleShot(0, this, [=]()
+                                   {
+                                       onAddUserToProject(id, m_cur_user->getId());
+                                   });
+                ui->tabWidget->setCurrentIndex(ACCOUNT);
+            }, Qt::QueuedConnection);
     }
     lt->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
     //    lt->setSpacing(0);
@@ -217,6 +229,8 @@ void MainWindow::fillAccountPage()
     auto wgt = new WgtWorker(m_cur_user, m_projects, true);
     lt->addWidget(wgt);
     connect(wgt, &WgtWorker::sigShowProject, this, &MainWindow::onShowProject);
+    connect(wgt, &WgtWorker::sigDelProject, this, [=](){ onAddUserToProject(0, m_cur_user->getId()); }, Qt::QueuedConnection);
+    connect(this, &MainWindow::sigUpdCurrentAccount, wgt, &WgtWorker::onUpdProject, Qt::QueuedConnection);
 
     lt->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
     ui->sa_account_content->setLayout(lt);
@@ -233,7 +247,7 @@ void MainWindow::fillManagerPage()
     {
         if (m_cur_user->getId() == proj->getManagerId())
         {
-            auto wgt = new WgtProject(proj, m_all_skills, true, ui->sa_account);
+            auto wgt = new WgtProject(proj, m_all_skills, true, false, ui->sa_account);
             connect(wgt, &WgtProject::sigDelProject, this, [this](int id_proj)
                 {
                     fillProjects();
@@ -376,6 +390,7 @@ void MainWindow::authentication()
 //    m_cur_user = m_workers.back();
     fillWgtUsers();
     fillUi();
+    fillWgtProjects();
 }
 
 void MainWindow::registration()
@@ -505,6 +520,7 @@ void MainWindow::onAddUserToProject(int id_proj, int id_user)
     // Обновить страницу workers
     fillUsers();
     fillWgtUsers();
+    fillWgtProjects();
 }
 
 void MainWindow::onShowProject(int id)

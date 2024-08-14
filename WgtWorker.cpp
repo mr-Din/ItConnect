@@ -6,11 +6,12 @@
 #include <QMessageBox>
 #include <QScreen>
 
-WgtWorker::WgtWorker(std::shared_ptr<User> user, std::vector<std::shared_ptr<Project>>& projects, bool is_editable, QWidget *parent)
-    : QWidget(parent)
+WgtWorker::WgtWorker(std::shared_ptr<User> user, std::vector<std::shared_ptr<Project>>& projects, bool is_editable, bool is_adding_proj, QWidget *parent)
+    : QFrame(parent)
     , ui(std::make_unique<Ui_WgtWorker>())
     , m_user(user)
     , m_is_editable(is_editable)
+    , m_is_adding_proj(is_adding_proj)
     , m_all_projects(projects)
 {
     ui->setupUi(this);
@@ -20,6 +21,12 @@ WgtWorker::WgtWorker(std::shared_ptr<User> user, std::vector<std::shared_ptr<Pro
 
 WgtWorker::~WgtWorker()
 {
+}
+
+void WgtWorker::onUpdProject(int proj_id)
+{
+    m_user->setProjectId(proj_id);
+    fillUi();
 }
 
 void WgtWorker::fillUi()
@@ -36,10 +43,15 @@ void WgtWorker::fillUi()
     ui->lbl_info_2->setText(m_user->getDescription());
     ui->btn_edit->setVisible(m_is_editable);
     ui->lbl_status_2->setText(m_user->getProjectId() == 0 ? "Свободен" : "Занят");
+
     ui->btn_add_to_project->setEnabled(m_user->getProjectId() == 0);
+    ui->stackedWidget_Del->setVisible(m_user->getProjectId() != 0 && m_is_editable);
+    ui->stackedWidget_Del->setCurrentIndex(0);
+
     ui->btn_project->setVisible(m_user->getProjectId() != 0);
 
     ui->btn_project->setText(getProjectName());
+    ui->btn_add_to_project->setVisible(m_is_adding_proj);
 
     /// TODO брать изображение из базы данных (либо адрес картинки из бд)
     QString path_to_photo = ":/icons/user-outline-on.svg";
@@ -54,6 +66,10 @@ void WgtWorker::setupSigSlot()
     connect(ui->btn_change_photo, &QPushButton::clicked, this, &WgtWorker::onChangePhoto);
     connect(ui->btn_add_to_project, &QPushButton::clicked, this, &WgtWorker::onSelectProject);
     connect(ui->btn_project, &QPushButton::clicked, this, [=]{ emit sigShowProject(m_user->getProjectId()); });
+
+    connect(ui->btn_del_proj, &QPushButton::clicked, this, [this]{ onDelProjectConfirm(1); });
+    connect(ui->btn_del_confirm, &QPushButton::clicked, this, &WgtWorker::onDelProject);
+    connect(ui->btn_del_cancel, &QPushButton::clicked, this, [this]{ onDelProjectConfirm(0); });
 
 }
 
@@ -115,4 +131,16 @@ void WgtWorker::onChangePhoto()
 void WgtWorker::onSelectProject()
 {
     emit sigSelectProject(m_user->getId());
+}
+
+void WgtWorker::onDelProjectConfirm(int pg)
+{
+    ui->stackedWidget_Del->setCurrentIndex(pg);
+}
+
+void WgtWorker::onDelProject()
+{
+    emit sigDelProject();
+    m_user->setProjectId(0);
+    fillUi();
 }

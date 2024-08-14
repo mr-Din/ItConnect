@@ -152,9 +152,22 @@ inline QSqlError initDb()
 
     if (!q.prepare(INSERT_SKILL_SQL))
         return q.lastError();
-    QVariant skill1 = addSkill(q, QLatin1String("test skill 1"));
-    QVariant skill2 = addSkill(q, QLatin1String("test skill 2"));
-    QVariant skill3 = addSkill(q, QLatin1String("test skill 3"));
+    QVariant skill1 = addSkill(q, QLatin1String("Embedded Developer (C/C++)"));
+    QVariant skill2 = addSkill(q, QLatin1String("QA-engineer"));
+    QVariant skill3 = addSkill(q, QLatin1String("Backend Developer (Python/Django)"));
+
+    addSkill(q, QLatin1String("Backend Developer (Go)"));
+    addSkill(q, QLatin1String("Frontend Developer (React/Vue.js/Angular)"));
+    addSkill(q, QLatin1String("Mobile Developer (iOS/Android/Flutter/Kotlin/Swift)"));
+    addSkill(q, QLatin1String("UX/UI designer"));
+    addSkill(q, QLatin1String("Machine Learning engineer"));
+    addSkill(q, QLatin1String("Big Data engineer"));
+    addSkill(q, QLatin1String("DevOps-engineer"));
+    addSkill(q, QLatin1String("Data Scientist"));
+    addSkill(q, QLatin1String("Security engineer"));
+    addSkill(q, QLatin1String("Blockchain Developer"));
+    addSkill(q, QLatin1String("VR/AR Developer"));
+    addSkill(q, QLatin1String("Fullstack Developer (MERN stack)"));
 
 
     if (!q.prepare(INSERT_USER_SQL))
@@ -167,7 +180,7 @@ inline QSqlError initDb()
 
     if (!q.prepare(INSERT_PROJECT_SQL))
         return q.lastError();
-    QVariant proj1 = addProject(q, QLatin1String("proj1"), QLatin1String("Proj1 - is cool"), manager1);
+    QVariant proj1 = addProject(q, QLatin1String("1. Project Phoenix"), QLatin1String("Платформа для автоматизации управления удалёнными командами. Включает функции отслеживания времени, управления задачами и видеоконференций."), manager1);
 
     if (!q.prepare(INSERT_SKILLS_TO_PROJ_SQL))
         return q.lastError();

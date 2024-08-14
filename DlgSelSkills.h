@@ -15,10 +15,11 @@ public:
     ~DlgSelSkills();
 
 private:
+    void paintEvent(QPaintEvent *event) override;
     void fillSkills();
     void initWgtsSkill();
 
-private:
+private slots:
     void onFillSelectedSkills();
 
 private:

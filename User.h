@@ -13,6 +13,7 @@ public:
     QString getDescription() const;
     QString getType() const;
     int getProjectId() const;
+    void setProjectId(int id);
 
 private:
     int m_id;

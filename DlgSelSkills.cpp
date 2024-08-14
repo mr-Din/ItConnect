@@ -1,6 +1,7 @@
 #include "DlgSelSkills.h"
 #include "ui_DlgSelSkills.h"
 
+#include <QScroller>
 #include <QVBoxLayout>
 #include <algorithm>
 
@@ -11,6 +12,8 @@ DlgSelSkills::DlgSelSkills(std::vector<QString> &added_skills, shrd_map_skills a
     , m_added_skills(added_skills)
 {
     ui->setupUi(this);
+    showMaximized();
+    QScroller::grabGesture(ui->scrollArea, QScroller::TouchGesture);
     fillSkills();
     initWgtsSkill();
     connect(this, &DlgSelSkills::accepted, this, &DlgSelSkills::onFillSelectedSkills);
@@ -18,6 +21,12 @@ DlgSelSkills::DlgSelSkills(std::vector<QString> &added_skills, shrd_map_skills a
 
 DlgSelSkills::~DlgSelSkills()
 {
+}
+
+void DlgSelSkills::paintEvent(QPaintEvent *event)
+{
+    QDialog::paintEvent(event);  // Вызов базового класса
+    update();  // Принудительная перерисовка
 }
 
 void DlgSelSkills::fillSkills()
@@ -38,8 +47,8 @@ void DlgSelSkills::initWgtsSkill()
         lt->addWidget(wgt);
     }
     lt->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    setLayout(lt);
-
+//    setLayout(lt);
+    ui->scrollAreaWidgetContents->setLayout(lt);
 }
 
 void DlgSelSkills::onFillSelectedSkills()

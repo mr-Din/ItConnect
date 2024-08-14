@@ -1,0 +1,262 @@
+/* Основные настройки для всего приложения */
+QWidget {
+    font-family: "Arial";
+    font-size: 14px;
+    color: #d3d7cf;
+    background-color: #2e3440;
+}
+
+/* QLabel */
+QLabel {
+    color: #d3d7cf;
+}
+
+/* QPushButton */
+QPushButton {
+    background-color: #4c566a;
+    color: white;
+    border: /*1px solid #5e81ac*/none;
+    padding: 5px 10px;
+    margin: 2px;
+    border-radius: 4px;
+}
+
+QPushButton:hover {
+    background-color: #5e81ac;
+}
+
+QPushButton:pressed {
+    background-color: #3b4252;
+}
+
+QPushButton:disabled {
+    background-color: #3b4252;
+    color: #616e88;
+}
+
+/* QLineEdit */
+QLineEdit {
+    border: 2px solid #5e81ac;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #3b4252;
+    color: #d8dee9;
+}
+
+QLineEdit:focus {
+    border: 1px solid #88c0d0;
+}
+
+/* QPlainTextEdit */
+QPlainTextEdit {
+    border: 2px solid #5e81ac;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #3b4252;
+    color: #d8dee9;
+}
+
+/* QComboBox */
+QComboBox {
+    border: 2px solid #5e81ac;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #3b4252;
+    color: #d8dee9;
+}
+
+QComboBox:focus {
+    border: 2px solid #88c0d0;
+}
+
+/* QComboBox::drop-down */
+QComboBox::drop-down {
+    border: none;
+}
+
+/* QComboBox::down-arrow */
+QComboBox::down-arrow {
+    image: url(down_arrow.png); /* Замените на свой путь к изображению стрелки */
+}
+
+/* QTabWidget */
+QTabWidget::pane {
+    border: 2px solid #5e81ac;
+    border-radius: 4px;
+    background-color: #3b4252;
+}
+
+QTabWidget::tab-bar {
+    left: 5px;
+}
+
+QTabBar::tab {
+    background: #4c566a;
+    border: 2px solid #5e81ac;
+    padding: 5px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    color: #d8dee9;
+}
+
+QTabBar::tab:selected {
+    background: #88c0d0;
+    color: #2e3440;
+}
+
+QTabBar::tab:!selected {
+    background: #3b4252;
+    color: #d8dee9;
+}
+
+/* QScrollArea */
+QScrollArea {
+    border: none;
+    background-color: #2e3440;
+}
+
+/* QStatusBar */
+QStatusBar {
+    background: #3b4252;
+    color: #d8dee9;
+    border-top: 2px solid #5e81ac;
+}
+
+/* QMenuBar */
+QMenuBar {
+    background-color: #3b4252;
+    color: #d8dee9;
+}
+
+QMenuBar::item {
+    padding: 5px 10px;
+}
+
+QMenuBar::item:selected {
+    background-color: #4c566a;
+}
+
+/* QStackedWidget */
+QStackedWidget {
+    border: /*1px solid #5e81ac*/none;
+    border-radius: 4px;
+    background-color: #3b4252;
+}
+
+/* QGridLayout */
+QGridLayout {
+    margin: 10px;
+    spacing: 10px;
+}
+
+/* QScrollBar */
+QScrollBar:horizontal {
+    border: none;
+    background: #3b4252;
+    height: 10px;
+    margin: 0px 20px 0 20px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #4c566a;
+    min-width: 20px;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:horizontal {
+    background: none;
+    border: none;
+    width: 20px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:horizontal {
+    background: none;
+    border: none;
+    width: 20px;
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+
+QScrollBar:vertical {
+    border: none;
+    background: #3b4252;
+    width: 10px;
+    margin: 20px 0 20px 0;
+}
+
+QScrollBar::handle:vertical {
+    background: #4c566a;
+    min-height: 20px;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:vertical {
+    background: none;
+    border: none;
+    height: 20px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical {
+    background: none;
+    border: none;
+    height: 20px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+ItConnect #pushButton
+{
+    background: transparent;
+    image: url(:/icons/redo.svg);
+}
+
+ItemSkill[is_selected="false"]
+{
+    text-align:left;
+    qproperty-icon: url(:/icons/gray-icon.svg);
+    qproperty-iconSize: 24px;
+    color: #d8dee9;
+}
+
+ItemSkill[is_selected="true"]
+{
+    text-align:left;
+    qproperty-icon: url(:/icons/menu-checked.svg);
+    qproperty-iconSize: 24px;
+    color: white;
+}
+
+/*WgtProject QWidget#pg_proj_date,
+WgtProject QWidget#pg_edit_data,
+WgtProject QWidget#pg_confirm,
+WgtProject QWidget#pg_del,
+WgtProject QLabel,
+WgtProject QStackedWidget
+{
+    background: #394357;
+}*/
+
+WgtProject, WgtWorker
+{
+    border: 2px solid #5e81ac;
+    border-radius: 4px;
+}
+
+MainWindow QWidget#centralwidget,
+MainWindow QWidget#scrollAreaWidgetContents,
+MainWindow QWidget#sa_account_content,
+MainWindow QWidget#sa_workers_content,
+MainWindow QLabel#lbl_description,
+MainWindow QLabel#lbl_reg,
+MainWindow QLabel#lbl_enter,
+MainWindow #sa_projects_content,
+MainWindow #pg_reg,
+MainWindow #pg_user
+{
+    /*background: #394357;*/
+    background: #272a38;
+}

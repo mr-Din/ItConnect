@@ -37,6 +37,18 @@
         <string>Аккаунт</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item row="0" column="0">
          <widget class="QStackedWidget" name="st_wgt_account">
           <property name="currentIndex">
@@ -196,6 +208,18 @@
           </widget>
           <widget class="QWidget" name="pg_user">
            <layout class="QGridLayout" name="gridLayout_6">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item row="0" column="0">
              <spacer name="horizontalSpacer_3">
               <property name="orientation">
@@ -226,8 +250,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>66</width>
-                 <height>16</height>
+                 <width>427</width>
+                 <height>336</height>
                 </rect>
                </property>
               </widget>
@@ -289,8 +313,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>298</width>
-             <height>392</height>
+             <width>427</width>
+             <height>396</height>
             </rect>
            </property>
           </widget>
@@ -328,8 +352,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>298</width>
-             <height>392</height>
+             <width>427</width>
+             <height>396</height>
             </rect>
            </property>
           </widget>
@@ -364,19 +388,19 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>284</width>
-             <height>676</height>
+             <width>413</width>
+             <height>516</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_8">
             <property name="leftMargin">
-             <number>2</number>
+             <number>9</number>
             </property>
             <property name="topMargin">
              <number>2</number>
             </property>
             <property name="rightMargin">
-             <number>2</number>
+             <number>9</number>
             </property>
             <property name="bottomMargin">
              <number>2</number>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>WgtProject</class>
- <widget class="QWidget" name="WgtProject">
+ <widget class="QFrame" name="WgtProject">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -245,6 +245,12 @@
        </item>
        <item row="7" column="1" colspan="2">
         <widget class="QPushButton" name="btn_add_worker">
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string>Добавить в проект
 специалиста</string>
@@ -255,6 +261,12 @@
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
          </property>
         </spacer>
        </item>

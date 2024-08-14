@@ -57,6 +57,7 @@ private slots:
 
 signals:
     void sigShowProject(int id);
+    void sigUpdCurrentAccount(int proj_id);
 
 
 private:

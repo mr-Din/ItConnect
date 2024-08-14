@@ -15,10 +15,11 @@ public:
     ~DlgSelProject();
 
 private:
+    void paintEvent(QPaintEvent *event) override;
     void initWgtsProjects();
 
-private slots:
-    void onSelProject();
+//private slots:
+//    void onSelProject();
 
 signals:
     void sigSelProject(int id);

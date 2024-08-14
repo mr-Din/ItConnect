@@ -8,12 +8,13 @@
 #include <QScrollArea>
 #include <QScrollBar>
 
-WgtProject::WgtProject(std::shared_ptr<Project> proj, shrd_map_skills skills, bool is_account, QWidget *parent)
-    : QWidget(parent)
+WgtProject::WgtProject(std::shared_ptr<Project> proj, shrd_map_skills skills, bool is_account, bool is_selected, QWidget *parent)
+    : QFrame(parent)
     , ui(std::make_unique<Ui_WgtProject>())
     , m_project(proj)
     , m_all_skills(skills)
     , m_is_account(is_account)
+    , m_is_selected(is_selected)
     , m_sa(qobject_cast<QScrollArea*>(parent))
     , m_counter(0)
     , m_timer(new QTimer(this))
@@ -51,6 +52,8 @@ void WgtProject::fillUi()
 
     ui->stackedWidget_Del->setVisible(m_is_account);
     ui->btn_edit->setVisible(m_is_account);
+    ui->btn_add_skill->setVisible(m_is_account);
+    ui->btn_add_worker->setVisible(m_is_selected);
 
     ui->stackedWidget_Del->setCurrentIndex(0);
 
@@ -124,7 +127,7 @@ void WgtProject::setupSigSlot()
 
     connect(ui->btn_add_skill, &QPushButton::clicked, this, &WgtProject::onOpenDlgSelSkills);
 
-    connect(ui->btn_add_worker, &QPushButton::clicked, this, &WgtProject::sigSelProject);
+    connect(ui->btn_add_worker, &QPushButton::clicked, this, [this]{ emit sigSelProject(m_project->getId()); });
 }
 
 void WgtProject::setPhoto(const QString &path_to_photo)
@@ -361,7 +364,7 @@ void WgtProject::onClearAddedSkills()
 void WgtProject::animate()
 {
     if (m_counter % 2 == 0) {
-        setStyleSheet("background-color: #9adafc;");
+        setStyleSheet("background-color: #495366;");
     } else {
         setStyleSheet(m_style);
     }

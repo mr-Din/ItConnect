@@ -46,3 +46,8 @@ int User::getProjectId() const
 {
     return m_project_id;
 }
+
+void User::setProjectId(int id)
+{
+    m_project_id = id;
+}

@@ -5,18 +5,18 @@
 
 #include <QScrollArea>
 #include <QVBoxLayout>
-#include <QWidget>
+#include <QFrame>
 
 class Ui_WgtProject;
 
 using shrd_map_skills = std::shared_ptr<std::map<int, QString>>;
 
-class WgtProject : public QWidget
+class WgtProject : public QFrame
 {
     Q_OBJECT
     const static int PHOTO_WIDTH = 80;
 public:
-    explicit WgtProject(std::shared_ptr<Project> proj, shrd_map_skills skills, bool is_account = false, QWidget *parent = nullptr);
+    explicit WgtProject(std::shared_ptr<Project> proj, shrd_map_skills skills, bool is_account = false, bool is_selected = false, QWidget *parent = nullptr);
     ~WgtProject();
 
 public:
@@ -52,7 +52,7 @@ private slots:
 
 signals:
     void sigDelProject(int id_proj);
-    void sigSelProject();
+    void sigSelProject(int id_proj);
     void sigUpdateAll();
 
 private:
@@ -60,6 +60,7 @@ private:
     std::shared_ptr<Project> m_project;
     std::map<QString, QString> m_skills_ids;    // текущие скиллы, добавленные из бд
     bool m_is_account;
+    bool m_is_selected;
     QScrollArea* m_sa;
     shrd_map_skills m_all_skills;               // все скиллы
     std::vector<QString> m_del_buff_skills;     // буфер удалённых скиллов
