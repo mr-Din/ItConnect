@@ -12,7 +12,7 @@ DlgSelSkills::DlgSelSkills(std::vector<QString> &added_skills, shrd_map_skills a
     , m_added_skills(added_skills)
 {
     ui->setupUi(this);
-    showMaximized();
+//    showMaximized();
     QScroller::grabGesture(ui->scrollArea, QScroller::TouchGesture);
     fillSkills();
     initWgtsSkill();

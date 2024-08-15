@@ -8,14 +8,15 @@
 #include <QScrollArea>
 #include <QScrollBar>
 
-WgtProject::WgtProject(std::shared_ptr<Project> proj, shrd_map_skills skills, bool is_account, bool is_selected, QWidget *parent)
+WgtProject::WgtProject(std::shared_ptr<Project> proj, shrd_map_skills skills, bool is_account, bool is_selected, QWidget *parent_sa,  QWidget *parent)
     : QFrame(parent)
     , ui(std::make_unique<Ui_WgtProject>())
     , m_project(proj)
     , m_all_skills(skills)
     , m_is_account(is_account)
     , m_is_selected(is_selected)
-    , m_sa(qobject_cast<QScrollArea*>(parent))
+    , parent(parent)
+    , m_sa(qobject_cast<QScrollArea*>(parent_sa))
     , m_counter(0)
     , m_timer(new QTimer(this))
 {
@@ -318,6 +319,7 @@ void WgtProject::onOpenDlgSelSkills()
     }
 
     DlgSelSkills dlg(m_added_skills, unadded_skills, this);
+    dlg.setGeometry(parent->geometry());
     connect(&dlg, &DlgSelSkills::accepted, this, &WgtProject::onAddNewSkills);
     connect(&dlg, &DlgSelSkills::rejected, this, &WgtProject::onClearAddedSkills);
     if (dlg.exec())

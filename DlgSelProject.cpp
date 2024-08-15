@@ -20,7 +20,7 @@ DlgSelProject::DlgSelProject(std::vector<std::shared_ptr<Project>>& all_project,
 //    setFixedSize(width, height);
 #endif
 
-    showMaximized();
+//    showMaximized();
     QScroller::grabGesture(ui->scrollArea, QScroller::TouchGesture);
     initWgtsProjects();
 }

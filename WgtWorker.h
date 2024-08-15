@@ -37,6 +37,7 @@ signals:
     void sigSelectProject(int id);
     void sigDelProject();
     void sigShowProject(int id);
+    void sigUpdateMain();
 
 private:
     std::unique_ptr<Ui_WgtWorker> ui;

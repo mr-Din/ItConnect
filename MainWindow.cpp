@@ -79,6 +79,7 @@ void MainWindow::fillUi()
         ui->sa_workers_content->setDisabled(false);
         ui->tabWidget->setCurrentIndex(ACCOUNT);
         ui->st_wgt_account->setCurrentIndex(1);
+        ui->bnt_add_proj->show();
     }
     clearLE();
 }
@@ -231,6 +232,7 @@ void MainWindow::fillAccountPage()
     connect(wgt, &WgtWorker::sigShowProject, this, &MainWindow::onShowProject);
     connect(wgt, &WgtWorker::sigDelProject, this, [=](){ onAddUserToProject(0, m_cur_user->getId()); }, Qt::QueuedConnection);
     connect(this, &MainWindow::sigUpdCurrentAccount, wgt, &WgtWorker::onUpdProject, Qt::QueuedConnection);
+    connect(wgt, &WgtWorker::sigUpdateMain, this, [this]{ fillUsers(); fillWgtUsers(); });
 
     lt->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
     ui->sa_account_content->setLayout(lt);
@@ -247,7 +249,7 @@ void MainWindow::fillManagerPage()
     {
         if (m_cur_user->getId() == proj->getManagerId())
         {
-            auto wgt = new WgtProject(proj, m_all_skills, true, false, ui->sa_account);
+            auto wgt = new WgtProject(proj, m_all_skills, true, false, ui->sa_account, this);
             connect(wgt, &WgtProject::sigDelProject, this, [this](int id_proj)
                 {
                     fillProjects();
@@ -470,7 +472,9 @@ void MainWindow::registration()
         fillManagerPage();
     }
 
+    fillWgtUsers();
     fillUi();
+    fillWgtProjects();
 }
 
 void MainWindow::logout()
@@ -500,6 +504,7 @@ void MainWindow::addNewProject()
 void MainWindow::onDlgSelProject(int id_user)
 {
     DlgSelProject dlg(m_projects, m_cur_user, this);
+    dlg.setGeometry(this->geometry());
     connect(&dlg, &DlgSelProject::sigSelProject, this, [=](int id){ onAddUserToProject(id, id_user); });
     //    connect(&dlg, &DlgSelProject::accepted, this, &WgtWorker::onAddNewSkills);
     //    connect(&dlg, &DlgSelProject::rejected, this, &WgtWorker::onClearAddedSkills);

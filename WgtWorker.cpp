@@ -119,6 +119,7 @@ void WgtWorker::onDone()
     ui->lbl_login_2->setText(login);
     ui->lbl_info_2->setText(description);
     ui->stackedWidget->setCurrentIndex(0);
+    emit sigUpdateMain();
 }
 
 void WgtWorker::onChangePhoto()
