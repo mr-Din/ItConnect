@@ -2,10 +2,11 @@
 
 #include <QSqlQuery>
 
-Project::Project(int id, QString title, QString description, int manager_id)
+Project::Project(int id, QString title, QString description, QString status, int manager_id)
     : m_id(id)
     , m_title(title)
     , m_description(description)
+    , m_status(status)
     , m_manager_id(manager_id)
 {
     fillManager();
@@ -19,6 +20,11 @@ QString Project::getTitle() const
 QString Project::getDescription() const
 {
     return m_description;
+}
+
+QString Project::getStatus() const
+{
+    return m_status;
 }
 
 int Project::getManagerId() const

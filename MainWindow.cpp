@@ -3,11 +3,14 @@
 #include "InitDataBase.h"
 #include "WgtWorker.h"
 #include "DlgSelProject.h"
+#include "util.h"
 
 
 #include <QMessageBox>
+#include <QPalette>
 #include <QScroller>
 #include <QScrollBar>
+#include <QGraphicsDropShadowEffect>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -23,13 +26,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     for (auto sa : {ui->sa_account, ui->sa_projects, ui->sa_workers, ui->scrollArea}) {
         QScroller::grabGesture(sa, QScroller::TouchGesture);
-//        connect(sa->verticalScrollBar(), &QScrollBar::valueChanged, [sa]() {
-//            sa->update();
-//            qDebug()<<"FUCK";
-//        });
     }
 
     demoEnter();
+    utility::addShadowToObj<QLabel*>(this);
+    utility::addShadowToObj<QPushButton*>(this);
+
+//    QPalette palette;
+//    palette.setBrush(ui->scrollAreaWidgetContents->backgroundRole(),
+//                     QBrush(QPixmap(":/icons/main.png").scaled(ui->scrollAreaWidgetContents->size(),
+//                                                               Qt::KeepAspectRatioByExpanding,
+//                                                               Qt::SmoothTransformation)));
+//    ui->scrollAreaWidgetContents->setAutoFillBackground(true);
+//    ui->scrollAreaWidgetContents->setPalette(palette);
 }
 
 MainWindow::~MainWindow()
@@ -44,6 +53,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *event)
 {
+//    QPixmap pixmap;
+//    pixmap.load(":/icons/main.png");
+//    QPainter paint(ui->lbl_description);
+//    int widWidth = ui->scrollAreaWidgetContents->width();
+//    int widHeight = ui->scrollAreaWidgetContents->height();
+//    pixmap = pixmap.scaled(widWidth, widHeight, Qt::KeepAspectRatioByExpanding);
+//    paint.drawPixmap(0, 0, pixmap);
+
     QMainWindow::paintEvent(event);  // Вызов базового класса
     update();  // Принудительная перерисовка
 }
@@ -53,7 +70,7 @@ void MainWindow::setupSigSlot()
     connect(ui->btn_reg,      &QPushButton::clicked, this, &MainWindow::registration);
     connect(ui->btn_enter,    &QPushButton::clicked, this, &MainWindow::authentication);
     connect(ui->btn_logout,   &QPushButton::clicked, this, &MainWindow::logout);
-    connect(ui->bnt_add_proj, &QPushButton::clicked, this, &MainWindow::addNewProject);
+    connect(ui->btn_add_proj, &QPushButton::clicked, this, &MainWindow::addNewProject);
 }
 
 void MainWindow::fillUi()
@@ -71,7 +88,7 @@ void MainWindow::fillUi()
         ui->sa_workers_content->setDisabled(true);
         ui->tabWidget->setCurrentIndex(ACCOUNT);
         ui->st_wgt_account->setCurrentIndex(1);
-        ui->bnt_add_proj->hide();
+        ui->btn_add_proj->hide();
     }
     else if (m_type_user == "manager")
     {
@@ -79,7 +96,7 @@ void MainWindow::fillUi()
         ui->sa_workers_content->setDisabled(false);
         ui->tabWidget->setCurrentIndex(ACCOUNT);
         ui->st_wgt_account->setCurrentIndex(1);
-        ui->bnt_add_proj->show();
+        ui->btn_add_proj->show();
     }
     clearLE();
 }
@@ -154,9 +171,10 @@ void MainWindow::fillProjects()
         int id = proj_query.value(0).toInt();
         QString title = proj_query.value(1).toString();
         QString description = proj_query.value(2).toString();
-        int manager_id = proj_query.value(3).toInt();
+        QString status = proj_query.value(3).toString();
+        int manager_id = proj_query.value(4).toInt();
 
-        auto proj = std::make_shared<Project>(id, title, description, manager_id);
+        auto proj = std::make_shared<Project>(id, title, description, status, manager_id);
         m_projects.emplace_back(proj);
     }
 }
@@ -189,6 +207,7 @@ void MainWindow::fillWgtUsers()
         auto wgt = new WgtWorker(user, m_projects, false, true);
         connect(wgt, &WgtWorker::sigSelectProject, this, &MainWindow::onDlgSelProject);
         connect(wgt, &WgtWorker::sigShowProject, this, &MainWindow::onShowProject);
+//        setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
         lt->addWidget(wgt);
     }
     lt->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
@@ -228,14 +247,17 @@ void MainWindow::fillAccountPage()
     QVBoxLayout* lt = new QVBoxLayout();
 
     auto wgt = new WgtWorker(m_cur_user, m_projects, true);
+    wgt->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
     lt->addWidget(wgt);
     connect(wgt, &WgtWorker::sigShowProject, this, &MainWindow::onShowProject);
     connect(wgt, &WgtWorker::sigDelProject, this, [=](){ onAddUserToProject(0, m_cur_user->getId()); }, Qt::QueuedConnection);
     connect(this, &MainWindow::sigUpdCurrentAccount, wgt, &WgtWorker::onUpdProject, Qt::QueuedConnection);
     connect(wgt, &WgtWorker::sigUpdateMain, this, [this]{ fillUsers(); fillWgtUsers(); });
 
-    lt->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    lt->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::MinimumExpanding));
+//    lt->addStretch();
     ui->sa_account_content->setLayout(lt);
+    ui->btn_logout->setText("Hello, " + m_cur_user->getLogin() + "\nВыйти");
 }
 
 void MainWindow::fillManagerPage()
@@ -271,6 +293,7 @@ void MainWindow::fillManagerPage()
 
     lt->addSpacerItem(new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
     ui->sa_account_content->setLayout(lt);
+    ui->btn_logout->setText("Hello, " + m_cur_user->getLogin() + "\nВыйти");
 }
 
 std::shared_ptr<User> MainWindow::getUser(const QString &email)
@@ -448,7 +471,7 @@ void MainWindow::registration()
         q.lastError();
     if (type == 0)
     {
-        addUser(q, login, password, email, "", "worker", 0);
+        addUser(q, login, password, email, "empty", "worker", 0);
         /// TODO корректный id
 //        auto user = std::make_shared<User>(1, login, password, email, type, 0);
         if (auto user = getUser(email); user)
@@ -494,7 +517,7 @@ void MainWindow::addNewProject()
     }
     else
     {
-        addProject(q, QLatin1String("proj1"), QLatin1String("Proj1 - is cool"), m_cur_user->getId());
+        addProject(q, QLatin1String("empty"), QLatin1String("empty"), QLatin1String("active"), m_cur_user->getId());
         fillProjects();
         fillWgtProjects();
         fillManagerPage();

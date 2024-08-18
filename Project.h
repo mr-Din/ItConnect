@@ -6,11 +6,12 @@
 class Project
 {
 public:
-    Project(int id, QString title, QString description, int manager_id);
+    Project(int id, QString title, QString description, QString status, int manager_id);
 
 public:
     QString getTitle() const;
     QString getDescription() const;
+    QString getStatus() const;
     int getManagerId() const;
     int getId() const;
     QString getEmail() const;
@@ -22,6 +23,7 @@ private:
     int m_id;
     QString m_title;
     QString m_description;
+    QString m_status;
     int m_manager_id;
     std::shared_ptr<User> m_manager;
 };

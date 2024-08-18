@@ -2,6 +2,7 @@
 #include "InitDataBase.h"
 #include "ui_WgtWorker.h"
 #include "Project.h"
+#include "util.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QScreen>
@@ -52,6 +53,10 @@ void WgtWorker::fillUi()
 
     ui->btn_project->setText(getProjectName());
     ui->btn_add_to_project->setVisible(m_is_adding_proj);
+
+    utility::addShadowCurrentObj(this);
+    utility::addShadowToObj<QLabel*>(this);
+    utility::addShadowToObj<QPushButton*>(this);
 
     /// TODO брать изображение из базы данных (либо адрес картинки из бд)
     QString path_to_photo = ":/icons/user-outline-on.svg";

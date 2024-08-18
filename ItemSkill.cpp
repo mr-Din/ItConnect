@@ -1,4 +1,5 @@
 #include "ItemSkill.h"
+#include "util.h"
 #include <QStyle>
 
 ItemSkill::ItemSkill(int id, QString skill, QWidget *parent)
@@ -12,6 +13,8 @@ ItemSkill::ItemSkill(int id, QString skill, QWidget *parent)
         m_is_selected = !m_is_selected;
         style()->polish(this);
     });
+    utility::addShadowCurrentObj(this);
+
 }
 
 const bool ItemSkill::isSelected() const
@@ -27,4 +30,12 @@ const int ItemSkill::getId() const
 const QString ItemSkill::getSkillTitle() const
 {
     return m_skill;
+}
+
+void ItemSkill::resizeEvent(QResizeEvent *event)
+{
+    QFontMetrics fm(font());
+    QString elidedText = fm.elidedText(m_skill, Qt::ElideRight, parentWidget()->width() - 100);
+    setText(elidedText);
+    QPushButton::resizeEvent(event);
 }

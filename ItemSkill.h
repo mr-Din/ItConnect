@@ -16,6 +16,9 @@ public:
     const QString getSkillTitle() const;
 
 private:
+    void resizeEvent(QResizeEvent* event) override;
+
+private:
     bool m_is_selected;
     int m_id;
     QString m_skill;

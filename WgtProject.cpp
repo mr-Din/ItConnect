@@ -2,6 +2,7 @@
 #include "ui_WgtProject.h"
 #include "InitDataBase.h"
 #include "DlgSelSkills.h"
+#include "util.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -50,6 +51,7 @@ void WgtProject::fillUi()
     ui->lbl_title_2->setText(m_project->getTitle());
     ui->lbl_info_2->setText(m_project->getDescription());
     ui->lbl_email_2->setText(m_project->getEmail());
+    ui->lbl_status_2->setText(m_project->getStatus());
 
     ui->stackedWidget_Del->setVisible(m_is_account);
     ui->btn_edit->setVisible(m_is_account);
@@ -57,6 +59,10 @@ void WgtProject::fillUi()
     ui->btn_add_worker->setVisible(m_is_selected);
 
     ui->stackedWidget_Del->setCurrentIndex(0);
+
+    utility::addShadowCurrentObj(this);
+    utility::addShadowToObj<QLabel*>(this);
+    utility::addShadowToObj<QPushButton*>(this);
 
 //    ui->lbl_title_2->setText(m_user->getLogin());
 //    ui->lbl_status_2->setText(m_user->getProjectId() == 0 ? "Свободен" : "Занят");
@@ -164,8 +170,17 @@ void WgtProject::addSkillWgt(const QString& skill, QVBoxLayout* lt)
     btn_skill->setIcon(QIcon(":/icons/trash-can-gray.svg"));
     btn_skill->setIconSize(QSize(40,40));
     btn_skill->setMinimumHeight(50);
+    btn_skill->setMaximumWidth(300);
+
+    utility::addShadowCurrentObj(btn_skill);
+
     connect(btn_skill, &QPushButton::clicked, this, &WgtProject::onDelSkill);
     lt->addWidget(btn_skill);
+    lt->setAlignment(Qt::AlignCenter);
+
+    QFontMetrics fm(btn_skill->font());
+    QString elidedText = fm.elidedText(skill, Qt::ElideRight, btn_skill->width() - 100);
+    btn_skill->setText(elidedText);
 }
 
 void WgtProject::delSkillFromDB(const QString& id)
@@ -205,10 +220,7 @@ void WgtProject::onDelProject()
 {
     // Удаление из базы
     QSqlQuery q;
-    if (q.prepare(DELETE_PROJECT_SQL))
-    {
-        deleteProject(q, m_project->getId());
-    }
+    deleteProject(q, m_project->getId());
 
     // Удаление виджета
     emit sigDelProject(m_project->getId());
@@ -366,7 +378,8 @@ void WgtProject::onClearAddedSkills()
 void WgtProject::animate()
 {
     if (m_counter % 2 == 0) {
-        setStyleSheet("background-color: #495366;");
+//        setStyleSheet("background-color: #495366;");
+        setStyleSheet("QWidget#pg_proj_date {background-color: #495366; margin: -2px -2px -2px -2px; border: 4px solid #2e3440; border-radius: 10px;}");
     } else {
         setStyleSheet(m_style);
     }

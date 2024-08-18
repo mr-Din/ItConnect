@@ -7,5 +7,6 @@
         <file>trash-can-gray.svg</file>
         <file>gray-icon.svg</file>
         <file>menu-checked.svg</file>
+        <file>main.png</file>
     </qresource>
 </RCC>
