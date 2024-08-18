@@ -2,11 +2,12 @@
 
 #include <QSqlQuery>
 
-Project::Project(int id, QString title, QString description, QString status, int manager_id)
+Project::Project(int id, QString title, QString description, QString status, QString photo, int manager_id)
     : m_id(id)
     , m_title(title)
     , m_description(description)
     , m_status(status)
+    , m_photo(photo)
     , m_manager_id(manager_id)
 {
     fillManager();
@@ -25,6 +26,11 @@ QString Project::getDescription() const
 QString Project::getStatus() const
 {
     return m_status;
+}
+
+QString Project::getPhotoPath() const
+{
+    return m_photo;
 }
 
 int Project::getManagerId() const
@@ -62,8 +68,9 @@ void Project::fillManager()
         QString email = users_query.value(3).toString();
         QString description = users_query.value(4).toString();
         QString type = users_query.value(5).toString();
-        int project_id = users_query.value(6).toInt();
+        QString photo = users_query.value(6).toString();
+        int project_id = users_query.value(7).toInt();
 
-        m_manager = std::make_shared<User>(id, login, password, email, description, type, project_id);
+        m_manager = std::make_shared<User>(id, login, password, email, description, type, photo, project_id);
     }
 }

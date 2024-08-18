@@ -58,9 +58,7 @@ void WgtWorker::fillUi()
     utility::addShadowToObj<QLabel*>(this);
     utility::addShadowToObj<QPushButton*>(this);
 
-    /// TODO брать изображение из базы данных (либо адрес картинки из бд)
-    QString path_to_photo = ":/icons/user-outline-on.svg";
-    setPhoto(path_to_photo);
+    setPhoto(m_user->getPhotoPath());
 }
 
 void WgtWorker::setupSigSlot()
@@ -80,7 +78,13 @@ void WgtWorker::setupSigSlot()
 
 void WgtWorker::setPhoto(const QString &path_to_photo)
 {
-    QPixmap photo(path_to_photo);
+#ifdef Q_OS_ANDROID
+    QString destinationDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+#else
+    QString destinationDir = QCoreApplication::applicationDirPath();;
+#endif
+
+    QPixmap photo(destinationDir+path_to_photo);
     if (photo.isNull())
         photo.load(":/icons/user-outline-on.svg");
     QPixmap scaled_photo = photo.scaledToWidth(PHOTO_WIDTH, Qt::SmoothTransformation);
@@ -129,9 +133,13 @@ void WgtWorker::onDone()
 
 void WgtWorker::onChangePhoto()
 {
-    QString path_to_photo = QFileDialog::getOpenFileName(this, "Выберите изображение", "", "Изображения (*.png *.jpg *.jpeg *.bmp *.gif)");
+    auto name = utility::changePhoto(this, "user" + QString::number(m_user->getId()));
+    if (name.isEmpty())
+        return;
 
-    setPhoto(path_to_photo);
+    setPhoto(name);
+    QSqlQuery q;
+    updateUserPhoto(q, name, m_user->getId());
 }
 
 void WgtWorker::onSelectProject()

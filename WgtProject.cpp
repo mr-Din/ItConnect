@@ -66,9 +66,7 @@ void WgtProject::fillUi()
 
 //    ui->lbl_title_2->setText(m_user->getLogin());
 //    ui->lbl_status_2->setText(m_user->getProjectId() == 0 ? "Свободен" : "Занят");
-    /// TODO брать изображение из базы данных (либо адрес картинки из бд)
-    QString path_to_photo = ":/icons/noimage.svg";
-    setPhoto(path_to_photo);
+    setPhoto(m_project->getPhotoPath());
 }
 
 void WgtProject::fillSkills()
@@ -139,7 +137,13 @@ void WgtProject::setupSigSlot()
 
 void WgtProject::setPhoto(const QString &path_to_photo)
 {
-    QPixmap photo(path_to_photo);
+#ifdef Q_OS_ANDROID
+    QString destinationDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+#else
+    QString destinationDir = QCoreApplication::applicationDirPath();;
+#endif
+
+    QPixmap photo(destinationDir+path_to_photo);
     if (photo.isNull())
         photo.load(":/icons/noimage.svg");
     QPixmap scaled_photo = photo.scaledToWidth(PHOTO_WIDTH, Qt::SmoothTransformation);
@@ -292,9 +296,13 @@ void WgtProject::onDone()
 
 void WgtProject::onChangePhoto()
 {
-    QString path_to_photo = QFileDialog::getOpenFileName(this, "Выберите изображение", "", "Изображения (*.png *.jpg *.jpeg *.bmp *.gif)");
+    auto name = utility::changePhoto(this, "project" + QString::number(m_project->getId()));
+    if (name.isEmpty())
+        return;
 
-    setPhoto(path_to_photo);
+    setPhoto(name);
+    QSqlQuery q;
+    updateProjectPhoto(q, name, m_project->getId());
 }
 
 void WgtProject::onDelSkill()

@@ -1,12 +1,13 @@
 #include "User.h"
 
-User::User(int id, QString login, QString password, QString email, QString description, QString type, int project_id)
+User::User(int id, QString login, QString password, QString email, QString description, QString type, QString photo, int project_id)
     : m_id(id)
     , m_login(login)
     , m_password(password)
     , m_email(email)
     , m_description(description)
     , m_type(type)
+    , m_photo(photo)
     , m_project_id(project_id)
 {
 
@@ -40,6 +41,11 @@ QString User::getDescription() const
 QString User::getType() const
 {
     return m_type;
+}
+
+QString User::getPhotoPath() const
+{
+    return m_photo;
 }
 
 int User::getProjectId() const

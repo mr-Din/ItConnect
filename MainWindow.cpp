@@ -142,9 +142,10 @@ void MainWindow::fillUsers()
         QString email = users_query.value(3).toString();
         QString description = users_query.value(4).toString();
         QString type = users_query.value(5).toString();
-        int project_id = users_query.value(6).toInt();
+        QString photo = users_query.value(6).toString();
+        int project_id = users_query.value(7).toInt();
 
-        auto user = std::make_shared<User>(id, login, password, email, description, type, project_id);
+        auto user = std::make_shared<User>(id, login, password, email, description, type, photo, project_id);
         if (type == "worker")
         {
             m_workers.emplace_back(user);
@@ -172,9 +173,10 @@ void MainWindow::fillProjects()
         QString title = proj_query.value(1).toString();
         QString description = proj_query.value(2).toString();
         QString status = proj_query.value(3).toString();
-        int manager_id = proj_query.value(4).toInt();
+        QString photo = proj_query.value(4).toString();
+        int manager_id = proj_query.value(5).toInt();
 
-        auto proj = std::make_shared<Project>(id, title, description, status, manager_id);
+        auto proj = std::make_shared<Project>(id, title, description, status, photo, manager_id);
         m_projects.emplace_back(proj);
     }
 }
@@ -247,7 +249,7 @@ void MainWindow::fillAccountPage()
     QVBoxLayout* lt = new QVBoxLayout();
 
     auto wgt = new WgtWorker(m_cur_user, m_projects, true);
-    wgt->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+//    wgt->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
     lt->addWidget(wgt);
     connect(wgt, &WgtWorker::sigShowProject, this, &MainWindow::onShowProject);
     connect(wgt, &WgtWorker::sigDelProject, this, [=](){ onAddUserToProject(0, m_cur_user->getId()); }, Qt::QueuedConnection);
@@ -313,9 +315,10 @@ std::shared_ptr<User> MainWindow::getUser(const QString &email)
         QString email = users_query.value(3).toString();
         QString description = users_query.value(4).toString();
         QString type = users_query.value(5).toString();
-        int project_id = users_query.value(6).toInt();
+        QString photo = users_query.value(6).toString();
+        int project_id = users_query.value(7).toInt();
 
-        auto user = std::make_shared<User>(id, login, password, email, description, type, project_id);
+        auto user = std::make_shared<User>(id, login, password, email, description, type, photo, project_id);
         return user;
     }
     return nullptr;
@@ -471,7 +474,7 @@ void MainWindow::registration()
         q.lastError();
     if (type == 0)
     {
-        addUser(q, login, password, email, "empty", "worker", 0);
+        addUser(q, login, password, email, "empty", "worker", "", 0);
         /// TODO корректный id
 //        auto user = std::make_shared<User>(1, login, password, email, type, 0);
         if (auto user = getUser(email); user)
@@ -485,7 +488,7 @@ void MainWindow::registration()
     }
     if (type == 1)
     {
-        addUser(q, login, password, email, "", "manager", 0);
+        addUser(q, login, password, email, "", "manager", "", 0);
         if (auto user = getUser(email); user)
             m_managers.emplace_back(user);
 
@@ -517,7 +520,7 @@ void MainWindow::addNewProject()
     }
     else
     {
-        addProject(q, QLatin1String("empty"), QLatin1String("empty"), QLatin1String("active"), m_cur_user->getId());
+        addProject(q, QLatin1String("empty"), QLatin1String("empty"), QLatin1String("active"), QLatin1String(""), m_cur_user->getId());
         fillProjects();
         fillWgtProjects();
         fillManagerPage();
@@ -546,6 +549,9 @@ void MainWindow::onAddUserToProject(int id_proj, int id_user)
     updateUserProject(q, id_user, id_proj);
 
     // Обновить страницу workers
+    if (m_type_user=="worker")
+        fillAccountPage();
+
     fillUsers();
     fillWgtUsers();
     fillWgtProjects();

@@ -253,8 +253,6 @@ MainWindow QWidget#scrollAreaWidgetContents,
 MainWindow QWidget#sa_account_content,
 MainWindow QWidget#sa_workers_content,
 MainWindow QLabel#lbl_description,
-MainWindow QLabel#lbl_reg,
-MainWindow QLabel#lbl_enter,
 MainWindow #sa_projects_content,
 MainWindow #pg_reg,
 MainWindow #pg_user

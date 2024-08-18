@@ -5,12 +5,12 @@
 
 const auto USER_SQL = QLatin1String(R"(
     create table users(id integer primary key, login varchar, password varchar,
-                       email varchar, description varchar, type varchar, project_id integer)
+                       email varchar, description varchar, type varchar, photo varchar, project_id integer)
     )");
 
 const auto PROJECT_SQL = QLatin1String(R"(
     create table projects(id integer primary key, title varchar, description varchar,
-                        status varchar, manager_id integer)
+                        status varchar, photo varchar, manager_id integer)
     )");
 
 const auto SKILL_SQL =  QLatin1String(R"(
@@ -24,12 +24,12 @@ const auto SKILLS_TO_PROJ_SQL =  QLatin1String(R"(
 
 
 const auto INSERT_USER_SQL = QLatin1String(R"(
-    insert into users(login, password, email, description, type, project_id) values(?, ?, ?, ?, ?, ?)
+    insert into users(login, password, email, description, type, photo, project_id) values(?, ?, ?, ?, ?, ?, ?)
     )");
 
 const auto INSERT_PROJECT_SQL = QLatin1String(R"(
-    insert into projects(title, description, status, manager_id)
-                      values(?, ?, ?, ?)
+    insert into projects(title, description, status, photo, manager_id)
+                      values(?, ?, ?, ?, ?)
     )");
 
 const auto INSERT_SKILL_SQL = QLatin1String(R"(
@@ -44,6 +44,10 @@ const auto UPDATE_USER_SQL = QLatin1String(R"(
     UPDATE users SET login = :login, description = :description WHERE id = :id
     )");
 
+const auto UPDATE_USER_PHOTO_SQL = QLatin1String(R"(
+    UPDATE users SET photo = :photo WHERE id = :id
+    )");
+
 const auto UPDATE_USER_PROJ_SQL = QLatin1String(R"(
     UPDATE users SET project_id = :project_id WHERE id = :id
     )");
@@ -52,28 +56,34 @@ const auto UPDATE_PROJECT_SQL = QLatin1String(R"(
     UPDATE projects SET title = :title, description = :description WHERE id = :id
     )");
 
+const auto UPDATE_PROJECT_PHOTO_SQL = QLatin1String(R"(
+    UPDATE projects SET photo = :photo WHERE id = :id
+    )");
+
 const auto DELETE_PROJECT_SQL = QLatin1String(R"(
     DELETE FROM projects WHERE id = :id
     )");
 
 inline QVariant addUser(QSqlQuery &q, const QString &login, const QString &password, const QString &email,
-             const QString &description, const QString &type, const QVariant &project_id)
+             const QString &description, const QString &type, const QString &photo, const QVariant &project_id)
 {
     q.addBindValue(login);
     q.addBindValue(password);
     q.addBindValue(email);
     q.addBindValue(description);
     q.addBindValue(type);
+    q.addBindValue(photo);
     q.addBindValue(project_id);
     q.exec();
     return q.lastInsertId();
 }
 
-inline QVariant addProject(QSqlQuery &q, const QString &title, const QString &description, const QString &status, const QVariant &manager_id)
+inline QVariant addProject(QSqlQuery &q, const QString &title, const QString &description, const QString &status, const QString &photo, const QVariant &manager_id)
 {
     q.addBindValue(title);
     q.addBindValue(description);
     q.addBindValue(status);
+    q.addBindValue(photo);
     q.addBindValue(manager_id);
     q.exec();
     return q.lastInsertId();
@@ -101,6 +111,16 @@ inline void updateUser(QSqlQuery &q, const QString &login, const QString &descri
     q.exec();
 }
 
+inline void updateUserPhoto(QSqlQuery &q, const QString &photo, const QVariant &id)
+{
+    if (q.prepare(UPDATE_USER_PHOTO_SQL))
+    {
+        q.bindValue(":photo", photo);
+        q.bindValue(":id", id);
+        q.exec();
+    }
+}
+
 inline void updateUserProject(QSqlQuery &q, const QVariant &id, const QVariant &project_id)
 {
     q.bindValue(":id", id);
@@ -111,10 +131,19 @@ inline void updateUserProject(QSqlQuery &q, const QVariant &id, const QVariant &
 inline void updateProject(QSqlQuery &q, const QString &title, /*const QString &email,*/ const QString &description, const QVariant &id)
 {
     q.bindValue(":title", title);
-//    q.bindValue(":email", email);
     q.bindValue(":description", description);
     q.bindValue(":id", id);
     q.exec();
+}
+
+inline void updateProjectPhoto(QSqlQuery &q, const QString &photo, const QVariant &id)
+{
+    if (q.prepare(UPDATE_PROJECT_PHOTO_SQL))
+    {
+        q.bindValue(":photo", photo);
+        q.bindValue(":id", id);
+        q.exec();
+    }
 }
 
 inline void deleteSkillsForProject(QSqlQuery &q, const QVariant &project_id)
@@ -191,13 +220,13 @@ inline QSqlError initDb()
     if (!q.prepare(INSERT_USER_SQL))
         return q.lastError();
     QVariant manager1 = addUser(q, QLatin1String("manager1"), QLatin1String("123"),
-                                QLatin1String("manager1@mail.ru"), QLatin1String(""), QLatin1String("manager"), 0);
+                                QLatin1String("manager1@mail.ru"), QLatin1String(""), QLatin1String("manager"), QLatin1String(""), 0);
     QVariant manager2 = addUser(q, QLatin1String("manager2"), QLatin1String("123"),
-                                QLatin1String("manager2@mail.ru"), QLatin1String(""), QLatin1String("manager"), 0);
+                                QLatin1String("manager2@mail.ru"), QLatin1String(""), QLatin1String("manager"), QLatin1String(""), 0);
     QVariant manager3 = addUser(q, QLatin1String("manager3"), QLatin1String("123"),
-                                QLatin1String("manager3@mail.ru"), QLatin1String(""), QLatin1String("manager"), 0);
+                                QLatin1String("manager3@mail.ru"), QLatin1String(""), QLatin1String("manager"), QLatin1String(""), 0);
     QVariant manager4 = addUser(q, QLatin1String("manager4"), QLatin1String("123"),
-                                QLatin1String("manager4@mail.ru"), QLatin1String(""), QLatin1String("manager"), 0);
+                                QLatin1String("manager4@mail.ru"), QLatin1String(""), QLatin1String("manager"), QLatin1String(""), 0);
 
     QVariant managers[] = { manager1, manager2, manager3, manager4 };
     std::random_device rd;  // Получаем случайное значение от hardware-источника
@@ -205,7 +234,7 @@ inline QSqlError initDb()
     std::uniform_int_distribution<> distrib(0, 3); // Диапазон [0, 3] для 4-х менеджеров
 
     QVariant user1 = addUser(q, QLatin1String("user1"), QLatin1String("123"),
-                                QLatin1String("user1@mail.ru"), QLatin1String("description..."), QLatin1String("worker"), 0);
+                                QLatin1String("user1@mail.ru"), QLatin1String("description..."), QLatin1String("worker"), QLatin1String(""), 0);
 
     if (!q.prepare(INSERT_PROJECT_SQL))
         return q.lastError();
@@ -228,7 +257,7 @@ inline QSqlError initDb()
     {
         int cur_manager = distrib(gen);
         qDebug() << "Current manager: " << cur_manager <<" for project: " << proj_q.first;
-        addProject(q, proj_q.first, proj_q.second, "active", managers[cur_manager]);
+        addProject(q, proj_q.first, proj_q.second, "active", "", managers[cur_manager]);
     }
 //    QVariant proj1 = addProject(q, QLatin1String("1. Project Phoenix"), QLatin1String("Платформа для автоматизации управления удалёнными командами. Включает функции отслеживания времени, управления задачами и видеоконференций."), "active", manager1);
 
