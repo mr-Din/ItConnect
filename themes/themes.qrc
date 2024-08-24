@@ -3,5 +3,7 @@
         <file>ItConnect.qss</file>
         <file>ItConnect_dark.qss</file>
         <file>ItConnect_dark_grey.qss</file>
+        <file>ItConnect_dark_pic.qss</file>
+        <file>ItConnect_dark_green.qss</file>
     </qresource>
 </RCC>

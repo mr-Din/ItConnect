@@ -61,8 +61,9 @@ void WgtProject::fillUi()
     ui->stackedWidget_Del->setCurrentIndex(0);
 
     utility::addShadowCurrentObj(this);
-    utility::addShadowToObj<QLabel*>(this);
+    utility::addShadowToObj<QLabel*>(this, 0.5, 1);
     utility::addShadowToObj<QPushButton*>(this);
+    utility::addShadowCurrentObj(ui->lbl_photo);
 
 //    ui->lbl_title_2->setText(m_user->getLogin());
 //    ui->lbl_status_2->setText(m_user->getProjectId() == 0 ? "Свободен" : "Занят");
@@ -147,7 +148,10 @@ void WgtProject::setPhoto(const QString &path_to_photo)
     if (photo.isNull())
         photo.load(":/icons/noimage.svg");
     QPixmap scaled_photo = photo.scaledToWidth(PHOTO_WIDTH, Qt::SmoothTransformation);
-    ui->lbl_photo->setPixmap(scaled_photo);
+//    ui->lbl_photo->setPixmap(scaled_photo);
+    int radius = 10;
+    auto rounded_photo = utility::createRoundedPixmap(scaled_photo, radius);
+    ui->lbl_photo->setPixmap(rounded_photo);
 }
 
 void WgtProject::clearLayout(QWidget *wgt)
@@ -183,7 +187,7 @@ void WgtProject::addSkillWgt(const QString& skill, QVBoxLayout* lt)
     lt->setAlignment(Qt::AlignCenter);
 
     QFontMetrics fm(btn_skill->font());
-    QString elidedText = fm.elidedText(skill, Qt::ElideRight, btn_skill->width() - 100);
+    QString elidedText = fm.elidedText(skill, Qt::ElideRight, btn_skill->width() - 150);
     btn_skill->setText(elidedText);
 }
 

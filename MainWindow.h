@@ -29,7 +29,7 @@ private:
     void paintEvent(QPaintEvent *event) override;
     void setupSigSlot();
     void fillUi();
-    void setStyle();
+    void setStyle(const QString& style = ":/files/ItConnect_dark.qss");
     void prepareApp();
     void fillUsers();
     void fillProjects();
@@ -54,6 +54,7 @@ private slots:
     void onDlgSelProject(int id_user);
     void onAddUserToProject(int id_proj, int id_user);
     void onShowProject(int id);
+    void changeStyle();
 
 signals:
     void sigShowProject(int id);
@@ -68,4 +69,5 @@ private:
     std::vector<std::shared_ptr<Project>> m_projects;
     std::shared_ptr<User> m_cur_user;
     shrd_map_skills m_all_skills;
+    int m_cur_style;
 };

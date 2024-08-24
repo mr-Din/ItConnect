@@ -11,7 +11,7 @@ class Ui_WgtWorker;
 class WgtWorker : public QFrame
 {
     Q_OBJECT
-    const static int PHOTO_WIDTH = 80;
+    const static int PHOTO_WIDTH = 150;
 public:
     explicit WgtWorker(std::shared_ptr<User> user, std::vector<std::shared_ptr<Project>>& projects, bool is_editable = false, bool is_adding_proj = false, QWidget *parent = nullptr);
     ~WgtWorker();

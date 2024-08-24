@@ -2,6 +2,7 @@
 QWidget {
     font-family: "Arial";
     font-size: 14px;
+    font-weight: 600;
     color: #d3d7cf;
     background-color: #192f3c/*#2e3440*/;
 }
@@ -259,13 +260,6 @@ MainWindow #pg_user
 {
     /*background: #394357;*/
     background: /*#272a38*/#132531;
-}
-
-MainWindow QWidget#scrollAreaWidgetContents
-{
-    background-image: url(:/icons/main.png);
-    background-repeat: no-repeat;
-    background-position: center;
 }
 
 MainWindow QLabel#lbl_description

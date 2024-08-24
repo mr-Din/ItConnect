@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(std::make_unique<Ui_MainWindow>())
     , m_type_user(QString())
+    , m_cur_style(0)
 {
     ui->setupUi(this);
     setupSigSlot();
@@ -29,7 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     demoEnter();
-    utility::addShadowToObj<QLabel*>(this);
+    utility::addShadowToObj<QLabel*>(this, 0.5, 1);
+
     utility::addShadowToObj<QPushButton*>(this);
 
 //    QPalette palette;
@@ -71,6 +73,7 @@ void MainWindow::setupSigSlot()
     connect(ui->btn_enter,    &QPushButton::clicked, this, &MainWindow::authentication);
     connect(ui->btn_logout,   &QPushButton::clicked, this, &MainWindow::logout);
     connect(ui->btn_add_proj, &QPushButton::clicked, this, &MainWindow::addNewProject);
+    connect(ui->btn_style,    &QPushButton::clicked, this, &MainWindow::changeStyle);
 }
 
 void MainWindow::fillUi()
@@ -92,7 +95,7 @@ void MainWindow::fillUi()
     }
     else if (m_type_user == "manager")
     {
-        ui->sa_projects_content->setDisabled(true);
+        ui->sa_projects_content->setDisabled(false);
         ui->sa_workers_content->setDisabled(false);
         ui->tabWidget->setCurrentIndex(ACCOUNT);
         ui->st_wgt_account->setCurrentIndex(1);
@@ -101,12 +104,12 @@ void MainWindow::fillUi()
     clearLE();
 }
 
-void MainWindow::setStyle()
+void MainWindow::setStyle(const QString& style)
 {
     qDebug() << "Set stylesheet";
 //    QFile styleFile(":/files/ItConnect.qss");
     // тёмная тема
-    QFile styleFile(":/files/ItConnect_dark.qss");
+    QFile styleFile(style);
     styleFile.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(styleFile.readAll());
     setStyleSheet(styleSheet);
@@ -269,7 +272,7 @@ void MainWindow::fillManagerPage()
 
 //    lt->addWidget(new WgtWorker(m_cur_user));
     // Заполняем проекты, который привязаны к текущему менеджеру
-    for (const auto proj : m_projects)
+    for (auto proj : m_projects)
     {
         if (m_cur_user->getId() == proj->getManagerId())
         {
@@ -548,13 +551,25 @@ void MainWindow::onAddUserToProject(int id_proj, int id_user)
 
     updateUserProject(q, id_user, id_proj);
 
-    // Обновить страницу workers
-    if (m_type_user=="worker")
-        fillAccountPage();
 
     fillUsers();
     fillWgtUsers();
     fillWgtProjects();
+    // Обновить страницу account
+    if (m_type_user=="worker")
+    {
+        // upd m_cur_user
+        // Ищем пользователя по почте
+        auto find_worker_email = std::find_if(m_workers.begin(), m_workers.end(),
+                                              [&](const std::shared_ptr<User> user)
+                                              {
+                                                  return user->getId() == m_cur_user->getId();
+                                              });
+        if (find_worker_email != m_workers.end())
+            m_cur_user = *find_worker_email;
+
+        fillAccountPage();
+    }
 }
 
 void MainWindow::onShowProject(int id)
@@ -581,4 +596,25 @@ void MainWindow::onShowProject(int id)
     }
 
     emit sigShowProject(id);
+}
+
+void MainWindow::changeStyle()
+{
+    ++m_cur_style;
+    switch (m_cur_style) {
+    case 1:
+        setStyle(":/files/ItConnect_dark_pic.qss");
+        break;
+    case 2:
+        setStyle(":/files/ItConnect_dark_green.qss");
+        break;
+    case 3:
+        setStyle(":/files/ItConnect_dark_grey.qss");
+        break;
+    default:
+        m_cur_style = 0;
+        setStyle(":/files/ItConnect_dark.qss");
+        break;
+    }
+
 }

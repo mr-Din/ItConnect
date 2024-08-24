@@ -55,8 +55,9 @@ void WgtWorker::fillUi()
     ui->btn_add_to_project->setVisible(m_is_adding_proj);
 
     utility::addShadowCurrentObj(this);
-    utility::addShadowToObj<QLabel*>(this);
+    utility::addShadowToObj<QLabel*>(this, 0.5, 1);
     utility::addShadowToObj<QPushButton*>(this);
+    utility::addShadowCurrentObj(ui->lbl_photo);
 
     setPhoto(m_user->getPhotoPath());
 }
@@ -88,7 +89,10 @@ void WgtWorker::setPhoto(const QString &path_to_photo)
     if (photo.isNull())
         photo.load(":/icons/user-outline-on.svg");
     QPixmap scaled_photo = photo.scaledToWidth(PHOTO_WIDTH, Qt::SmoothTransformation);
-    ui->lbl_photo->setPixmap(scaled_photo);
+//    ui->lbl_photo->setPixmap(scaled_photo);
+    int radius = 10;
+    auto rounded_photo = utility::createRoundedPixmap(scaled_photo, radius);
+    ui->lbl_photo->setPixmap(rounded_photo);
 }
 
 QString WgtWorker::getProjectName() const

@@ -14,7 +14,7 @@ using shrd_map_skills = std::shared_ptr<std::map<int, QString>>;
 class WgtProject : public QFrame
 {
     Q_OBJECT
-    const static int PHOTO_WIDTH = 80;
+    const static int PHOTO_WIDTH = 150;
 public:
     explicit WgtProject(std::shared_ptr<Project> proj, shrd_map_skills skills, bool is_account = false,
                         bool is_selected = false, QWidget *parent_sa = nullptr, QWidget *parent = nullptr);

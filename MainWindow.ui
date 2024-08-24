@@ -30,7 +30,7 @@
     <item row="0" column="0">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tap_account">
        <attribute name="title">
@@ -238,7 +238,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>427</width>
-                 <height>312</height>
+                 <height>282</height>
                 </rect>
                </property>
               </widget>
@@ -328,7 +328,7 @@
              <x>0</x>
              <y>0</y>
              <width>427</width>
-             <height>396</height>
+             <height>366</height>
             </rect>
            </property>
           </widget>
@@ -367,7 +367,7 @@
              <x>0</x>
              <y>0</y>
              <width>427</width>
-             <height>396</height>
+             <height>366</height>
             </rect>
            </property>
           </widget>
@@ -401,7 +401,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-120</y>
              <width>413</width>
              <height>516</height>
             </rect>
@@ -453,6 +453,13 @@
         </item>
        </layout>
       </widget>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QPushButton" name="btn_style">
+      <property name="text">
+       <string>Don't click, or click</string>
+      </property>
      </widget>
     </item>
    </layout>

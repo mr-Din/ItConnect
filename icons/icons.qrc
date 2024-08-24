@@ -8,5 +8,7 @@
         <file>gray-icon.svg</file>
         <file>menu-checked.svg</file>
         <file>main.png</file>
+        <file>leaves.png</file>
+        <file>Triangle.png</file>
     </qresource>
 </RCC>
