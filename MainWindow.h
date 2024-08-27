@@ -29,7 +29,7 @@ private:
     void paintEvent(QPaintEvent *event) override;
     void setupSigSlot();
     void fillUi();
-    void setStyle(const QString& style = ":/files/ItConnect_dark.qss");
+    void setStyle(int number_style = 1);
     void prepareApp();
     void fillUsers();
     void fillProjects();

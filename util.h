@@ -79,4 +79,46 @@ inline QPixmap createRoundedPixmap(const QPixmap &pixmap, int radius)
 
     return roundedPixmap;
 }
+
+
+inline void saveStyle(int number_style)
+{
+#ifdef Q_OS_ANDROID
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/style.txt";
+#else
+    QString path = QCoreApplication::applicationDirPath() + "/style.txt";
+#endif
+    QFile file(path);
+
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream out(&file);
+        out << number_style;
+        file.close();
+    } else {
+        qDebug() << "Unable to open file for writing.";
+    }
+}
+
+inline int loadStyle()
+{
+    int number_style = 1;
+#ifdef Q_OS_ANDROID
+    QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/style.txt";
+#else
+    QString path = QCoreApplication::applicationDirPath() + "/style.txt";
+#endif
+    QFile file(path);
+    if (file.exists()) {
+        if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QTextStream in(&file);
+            number_style = in.readLine().toInt();
+            file.close();
+        } else {
+            qDebug() << "Unable to open file for reading.";
+        }
+    } else {
+        saveStyle(number_style);  // Создать файл с числом 1
+    }
+    return number_style;
+}
 } // utility

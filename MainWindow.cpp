@@ -16,14 +16,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(std::make_unique<Ui_MainWindow>())
     , m_type_user(QString())
-    , m_cur_style(0)
+    , m_cur_style(utility::loadStyle())
 {
     ui->setupUi(this);
     setupSigSlot();
     ui->combo_type->addItems({"Разработчик", "Проект менеджер"});
     fillUi();
     prepareApp();
-    setStyle();
+    setStyle(m_cur_style);
 
     for (auto sa : {ui->sa_account, ui->sa_projects, ui->sa_workers, ui->scrollArea}) {
         QScroller::grabGesture(sa, QScroller::TouchGesture);
@@ -104,11 +104,27 @@ void MainWindow::fillUi()
     clearLE();
 }
 
-void MainWindow::setStyle(const QString& style)
+void MainWindow::setStyle(int number_style)
 {
     qDebug() << "Set stylesheet";
 //    QFile styleFile(":/files/ItConnect.qss");
     // тёмная тема
+    QString style = ":/files/ItConnect_dark.qss";
+    switch (m_cur_style) {
+    case 2:
+        style = ":/files/ItConnect_dark_pic.qss";
+        break;
+    case 3:
+        style = ":/files/ItConnect_dark_green.qss";
+        break;
+    case 4:
+        style = ":/files/ItConnect_dark_grey.qss";
+        break;
+    default:
+        m_cur_style = 1;
+        style = ":/files/ItConnect_dark.qss";
+        break;
+    }
     QFile styleFile(style);
     styleFile.open(QFile::ReadOnly);
     QString styleSheet = QLatin1String(styleFile.readAll());
@@ -601,20 +617,6 @@ void MainWindow::onShowProject(int id)
 void MainWindow::changeStyle()
 {
     ++m_cur_style;
-    switch (m_cur_style) {
-    case 1:
-        setStyle(":/files/ItConnect_dark_pic.qss");
-        break;
-    case 2:
-        setStyle(":/files/ItConnect_dark_green.qss");
-        break;
-    case 3:
-        setStyle(":/files/ItConnect_dark_grey.qss");
-        break;
-    default:
-        m_cur_style = 0;
-        setStyle(":/files/ItConnect_dark.qss");
-        break;
-    }
-
+    utility::saveStyle(m_cur_style);
+    setStyle(m_cur_style);
 }
