@@ -133,6 +133,12 @@ void MainWindow::setStyle(int number_style)
 
 void MainWindow::prepareApp()
 {
+    QPixmap photo;
+    photo.load(":/icons/logo.png");
+    QPixmap scaled_photo = photo.scaledToHeight(150, Qt::SmoothTransformation);
+    int radius = 10;
+    auto rounded_photo = utility::createRoundedPixmap(scaled_photo, radius);
+    ui->lbl_logo->setPixmap(rounded_photo);
     initDb();
     fillUsers();
     fillProjects();

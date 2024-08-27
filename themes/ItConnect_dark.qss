@@ -1,8 +1,8 @@
 /* Основные настройки для всего приложения */
 QWidget {
-    font-family: "Arial";
-    font-size: 14px;
-    font-weight: 600;
+    font-family: "Calibri";
+    font-size: 18px;
+    font-weight: 500;
     color: #d3d7cf;
     background-color: #192f3c/*#2e3440*/;
 }
@@ -266,7 +266,7 @@ MainWindow QLabel#lbl_description
 {
     background: none;
     color: white;
-    font-size: 16px;
+    font-size: 22px;
 }
 
 MainWindow QPushButton#btn_add_proj,

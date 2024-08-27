@@ -10,5 +10,6 @@
         <file>main.png</file>
         <file>leaves.png</file>
         <file>Triangle.png</file>
+        <file>logo.png</file>
     </qresource>
 </RCC>
