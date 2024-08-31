@@ -549,6 +549,13 @@ void MainWindow::addNewProject()
         fillProjects();
         fillWgtProjects();
         fillManagerPage();
+
+        // Обновляем позицию вертикального скролла
+        QTimer::singleShot(100, this, [=]()
+                           {
+                               ui->sa_account->verticalScrollBar()->setValue(ui->sa_account->verticalScrollBar()->maximum());
+                           });
+
     }
 }
 
