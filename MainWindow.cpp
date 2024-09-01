@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
         QScroller::grabGesture(sa, QScroller::TouchGesture);
     }
 
-    demoEnter();
+//    demoEnter();
     utility::addShadowToObj<QLabel*>(this, 0.5, 1);
 
     utility::addShadowToObj<QPushButton*>(this);
@@ -74,6 +74,10 @@ void MainWindow::setupSigSlot()
     connect(ui->btn_logout,   &QPushButton::clicked, this, &MainWindow::logout);
     connect(ui->btn_add_proj, &QPushButton::clicked, this, &MainWindow::addNewProject);
     connect(ui->btn_style,    &QPushButton::clicked, this, &MainWindow::changeStyle);
+    connect(ui->btn_to_reg,   &QPushButton::clicked, this, [this]{ ui->tabWidget->setCurrentIndex(ACCOUNT); });
+
+    connect(ui->le_password, &QLineEdit::returnPressed, ui->btn_enter, &QPushButton::click);
+    connect(ui->le_password_confirm, &QLineEdit::returnPressed, ui->btn_reg, &QPushButton::click);
 }
 
 void MainWindow::fillUi()
